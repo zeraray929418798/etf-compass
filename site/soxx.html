@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="七只 ETF 的估值罗盘：价格、PE-TTM、Forward PE、PEG、股息率、股权风险溢价及与 SPY 的对比。">
+<title>ETF 估值罗盘 · CASH COW LAB</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body data-theme="vflo">
+<div class="page-grid" aria-hidden="true"></div>
+<div class="ambient ambient-a" aria-hidden="true"></div>
+<div class="ambient ambient-b" aria-hidden="true"></div>
+
+<header class="topbar">
+  <a class="brand" href="#top" aria-label="回到顶部">
+    <span class="brand-mark">C</span>
+    <span class="brand-copy"><b>CASH COW LAB</b><small>ETF VALUATION TERMINAL</small></span>
+  </a>
+  <div class="status-pill"><span class="pulse"></span><span>数据截至 <b id="topAsOf">—</b></span></div>
+</header>
+
+<nav class="etf-nav" aria-label="ETF 页面切换">
+  <a href="index.html" data-ticker="HUB">总览</a>
+  <a href="vflo.html" data-ticker="VFLO">VFLO</a>
+  <a href="iflo.html" data-ticker="IFLO">IFLO</a>
+  <a href="cowz.html" data-ticker="COWZ">COWZ</a>
+  <a href="schd.html" data-ticker="SCHD">SCHD</a>
+  <a href="qqq.html" data-ticker="QQQ">QQQ</a>
+  <a href="soxx.html" data-ticker="SOXX">SOXX</a>
+  <a href="xlp.html" data-ticker="XLP">XLP</a>
+  <span class="etf-nav-note">七只 ETF · 同一个 SPY 参照系</span>
+</nav>
+
+<main id="top">
+  <section class="hero">
+    <div class="hero-copy">
+      <div class="eyebrow"><span class="eyebrow-line"></span><span id="heroEyebrow">—</span></div>
+      <h1 id="heroTitle">—</h1>
+      <p class="lede" id="heroLede">—</p>
+      <div class="hero-price-row">
+        <div class="hero-price"><span class="cur">$</span><b id="heroPrice">—</b><span class="chg" id="heroChange">—</span></div>
+        <div class="hero-facts">
+          <span>成立 <b id="factInception">—</b></span>
+          <span>费率 <b id="factExpense">—</b></span>
+          <span>规模 <b id="factAum">—</b></span>
+          <span>持仓 <b id="factHoldings">—</b></span>
+        </div>
+      </div>
+      <div class="range-block">
+        <div class="range-label"><span>52 WEEK RANGE</span><b id="rangeText">—</b></div>
+        <div class="range-track"><div class="range-fill" id="rangeFill"></div><div class="range-dot" id="rangeDot"></div></div>
+      </div>
+    </div>
+
+    <aside class="hero-gauge card" aria-label="综合估值分位">
+      <div class="gauge-top">
+        <span class="micro">VALUATION TEMPERATURE</span>
+        <span class="badge badge-red" id="regimeBadge">—</span>
+      </div>
+      <svg class="gauge" viewBox="0 0 320 212" role="img" aria-labelledby="gaugeTitle">
+        <title id="gaugeTitle">综合估值分位仪表盘</title>
+        <g id="gaugeSegments"></g>
+        <g class="gauge-ticks" id="gaugeTicks"></g>
+        <g class="needle" id="gaugeNeedle">
+          <line x1="160" y1="156" x2="160" y2="62" stroke="#f4f7fb" stroke-width="2.2" stroke-linecap="round"/>
+          <line x1="160" y1="156" x2="160" y2="72" stroke="rgba(244,247,251,.18)" stroke-width="7" stroke-linecap="round"/>
+        </g>
+        <circle cx="160" cy="156" r="7.5" fill="#0b1119" stroke="#f4f7fb" stroke-width="2"/>
+        <circle cx="160" cy="156" r="2.5" fill="#e8b45a"/>
+        <text x="26" y="193" class="gauge-end">便宜</text>
+        <text x="294" y="193" class="gauge-end" text-anchor="end">昂贵</text>
+      </svg>
+      <div class="gauge-reading">
+        <div class="gauge-score"><b id="gaugeScore">—</b><span>/ 100</span></div>
+        <p id="gaugeVerdict">正在读取历史分位…</p>
+      </div>
+      <div class="gauge-scale"><span>0 深度低估</span><span>50 适中</span><span>100 高估</span></div>
+    </aside>
+  </section>
+
+  <section class="ticker-strip" aria-label="实时指标摘要">
+    <div class="tick"><span id="tickTicker">—</span><b id="tickPrice">—</b><em id="tickChg">—</em></div>
+    <div class="tick"><span>PE-TTM</span><b id="tickPe">—</b><em class="tone-red" id="tickPePct">—</em></div>
+    <div class="tick"><span>VS SPY</span><b id="tickSpyDiscount">—</b><em class="tone-blue" id="tickSpyLabel">TTM PE 折价</em></div>
+    <div class="tick"><span>DIV YIELD</span><b id="tickDy">—</b><em class="tone-teal" id="tickDyPct">—</em></div>
+    <div class="tick"><span>ERP / 10Y</span><b id="tickErp">—</b><em class="tone-blue" id="tickUst">—</em></div>
+    <div class="tick tick-note"><span>MODEL</span><b>PE 为锚定估算</b><em>详见方法</em></div>
+  </section>
+
+  <section id="overview" class="section">
+    <div class="section-head reveal">
+      <div><span class="kicker">01 / DASHBOARD</span><h2>一眼看清，贵与便宜</h2></div>
+      <p>绝对数值告诉你“是多少”，历史分位告诉你“处在哪”。五档分位，把估值翻译成位置。</p>
+    </div>
+
+    <div class="overview-grid">
+      <div class="card compass-card reveal">
+        <div class="card-head">
+          <div><span class="micro">VALUATION COMPASS</span><h3>估值罗盘</h3></div>
+          <div class="compass-legend"><span>便宜</span><i></i><span>贵</span></div>
+        </div>
+        <div class="compass-list" id="compassList"></div>
+        <div class="compass-foot">
+          <span>每行按“昂贵度”着色，右端为历史高位。</span>
+          <span id="compassFootNote">—</span>
+        </div>
+      </div>
+
+      <div class="insight-stack reveal" id="insightStack"></div>
+    </div>
+  </section>
+
+  <section class="section metrics-section">
+    <div class="metric-grid" id="metricCards"></div>
+  </section>
+
+  <section id="price" class="section">
+    <div class="section-head reveal">
+      <div><span class="kicker">02 / PRICE</span><h2 id="priceHead">—</h2></div>
+      <p id="priceSub">—</p>
+    </div>
+    <div class="card chart-card chart-card-wide reveal">
+      <div class="chart-head">
+        <div class="chart-title"><span class="micro">ADJUSTED CLOSE</span><h3>价格与回撤 <small>Price &amp; Drawdown</small></h3></div>
+        <div class="chart-read"><b id="priceRead">—</b><span class="pill" id="priceReadSub">—</span></div>
+      </div>
+      <div class="range-tools">
+        <div class="range-tabs" id="rangeTabs" role="group" aria-label="时间范围"></div>
+        <span class="range-hint" id="rangeHint">滚轮缩放</span>
+      </div>
+      <div class="line-legend"><span><i class="swatch gold"></i><span id="priceLegendTicker">— 收盘价</span></span><span><i class="swatch teal"></i>200 日均线</span><span><i class="swatch red"></i>回撤</span></div>
+      <div class="chart-wrap chart-price"><canvas id="priceChart"></canvas></div>
+      <div class="chart-sub-label"><span>DRAWDOWN</span><span>回撤</span></div>
+      <div class="chart-wrap chart-dd"><canvas id="ddChart"></canvas></div>
+      <div class="mini-stats" id="priceStats"></div>
+    </div>
+  </section>
+
+  <section id="valuation" class="section">
+    <div class="section-head reveal">
+      <div><span class="kicker">03 / VALUATION</span><h2 id="valHead">—</h2></div>
+      <p id="valSub">—</p>
+    </div>
+
+    <div class="zone-legend reveal">
+      <span><i class="zone-dot z0"></i>低估 <b>0–20</b></span>
+      <span><i class="zone-dot z1"></i>偏低 <b>20–40</b></span>
+      <span><i class="zone-dot z2"></i>适中 <b>40–60</b></span>
+      <span><i class="zone-dot z3"></i>偏高 <b>60–80</b></span>
+      <span><i class="zone-dot z4"></i>高估 <b>80–100</b></span>
+      <em>分位越高越贵；股息率与 ERP 为反向指标，图中颜色已按估值方向翻转。</em>
+    </div>
+
+    <div class="chart-grid">
+      <div class="card chart-card reveal">
+        <div class="chart-head">
+          <div class="chart-title"><span class="micro">TRAILING P/E</span><h3>PE-TTM <small>市盈率</small><span class="tag-model">估算</span></h3></div>
+          <div class="chart-read"><b id="peRead">—</b><span class="pill badge-red" id="pePill">—</span></div>
+        </div>
+        <div class="band-legend"><span>便宜</span><div class="band-gradient"></div><span>昂贵</span></div>
+        <div class="chart-wrap chart-mid"><canvas id="peChart"></canvas></div>
+        <div class="chart-foot"><span id="peFoot">—</span><span>虚线 = 中位数 · 背景 = 五档分位</span></div>
+      </div>
+
+      <div class="card chart-card spy-compare-card reveal">
+        <div class="chart-head">
+          <div class="chart-title"><span class="micro">RELATIVE VALUATION</span><h3>相对 SPY <small>当前时点</small></h3></div>
+          <div class="chart-read"><b id="spyPeDiscount">—</b><span class="pill badge-blue" id="spyPeLabel">TTM PE 折价</span></div>
+        </div>
+        <div class="compare-list" id="spyCompareList"></div>
+        <div class="chart-foot"><span id="spyCompareFoot">—</span><span>同一时点 · 跨风格参照</span></div>
+      </div>
+    </div>
+
+    <div class="card heatmap-card reveal">
+      <div class="card-head">
+        <div><span class="micro">PERCENTILE MATRIX</span><h3>历史分位矩阵</h3></div>
+        <p>颜色越红，代表该指标在自身历史中越贵。空白表示当时样本不足。</p>
+      </div>
+      <div class="heatmap-scroll"><div class="heatmap" id="heatmap"></div></div>
+      <div class="heatmap-foot"><span>按季度末读数 · 最后一列为当前不完全季度</span><span id="heatmapNote">—</span></div>
+    </div>
+  </section>
+
+  <section id="income" class="section">
+    <div class="section-head reveal">
+      <div><span class="kicker">04 / INCOME</span><h2 id="incomeHead">—</h2></div>
+      <p id="incomeSub">—</p>
+    </div>
+    <div class="card chart-card chart-card-wide reveal">
+      <div class="chart-head">
+        <div class="chart-title"><span class="micro">TTM DISTRIBUTION YIELD</span><h3>股息率 <small>Trailing 12M</small></h3></div>
+        <div class="chart-read"><b id="dyRead">—</b><span class="pill tone-teal" id="dyPill">—</span></div>
+      </div>
+      <div class="band-legend reverse"><span>收益率低 · 贵</span><div class="band-gradient reverse"></div><span>收益率高 · 便宜</span></div>
+      <div class="chart-wrap chart-mid"><canvas id="dyChart"></canvas></div>
+      <div class="chart-foot"><span id="dyFoot">—</span><span>背景 = 五档分位（低收益率为贵）</span></div>
+    </div>
+  </section>
+
+  <section id="risk" class="section">
+    <div class="section-head reveal">
+      <div><span class="kicker">05 / RISK PREMIUM</span><h2>风险溢价，安全垫还剩多厚</h2></div>
+      <p>盈利收益率减去 10 年期美债收益率。数值越低，股票相对无风险资产越贵。</p>
+    </div>
+    <div class="card chart-card chart-card-wide reveal">
+      <div class="chart-head">
+        <div class="chart-title"><span class="micro">EQUITY RISK PREMIUM</span><h3>股权风险溢价 <small>vs 10Y Treasury</small></h3></div>
+        <div class="chart-read"><b id="erpRead">—</b><span class="pill badge-red" id="erpPill">—</span></div>
+      </div>
+      <div class="band-legend reverse"><span>溢价低 · 贵</span><div class="band-gradient reverse"></div><span>溢价高 · 便宜</span></div>
+      <div class="line-legend"><span><i class="swatch red"></i>股权风险溢价</span><span><i class="swatch blue"></i>10 年期美债收益率</span><span><i class="swatch dim"></i>历史中位数</span></div>
+      <div class="chart-wrap chart-erp"><canvas id="erpChart"></canvas></div>
+      <div class="risk-strip" id="riskStrip"></div>
+      <div class="chart-foot"><span id="erpFoot">—</span><span>背景 = 五档分位（低溢价为贵）</span></div>
+    </div>
+  </section>
+
+  <section id="spy" class="section">
+    <div class="section-head reveal">
+      <div><span class="kicker">06 / VS SPY</span><h2>和 SPY 比，位置不同</h2></div>
+      <p>SPY 是宽基市场参照系，不是估值锚。把它放在旁边，是为了看清折价背后承担了什么。</p>
+    </div>
+
+    <div class="card chart-card chart-card-wide reveal">
+      <div class="chart-head">
+        <div class="chart-title"><span class="micro">TOTAL RETURN</span><h3>总回报 <small><span id="perfTitleTicker">—</span> vs SPY</small></h3></div>
+        <div class="chart-read"><b id="relativePerfRead">—</b><span class="pill badge-teal" id="relativePerfPill">—</span></div>
+      </div>
+      <div class="line-legend"><span><i class="swatch gold"></i><span id="perfLegendTicker">—</span></span><span><i class="swatch blue"></i>SPY</span><span>起点 = 100</span></div>
+      <div class="chart-wrap chart-mid"><canvas id="relativePerfChart"></canvas></div>
+      <div class="chart-foot"><span id="relativePerfFoot">—</span><span>含股息再投资 · 共同起点</span></div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="card chart-card reveal">
+        <div class="chart-head">
+          <div class="chart-title"><span class="micro">RELATIVE STRENGTH</span><h3>相对强弱 <small><span id="relativeTicker">—</span> / SPY</small></h3></div>
+          <div class="chart-read"><b id="relativeRead">—</b><span class="pill" id="relativePill">—</span></div>
+        </div>
+        <div class="chart-wrap chart-mid"><canvas id="relativeChart"></canvas></div>
+        <div class="chart-foot"><span id="relativeFoot">—</span><span>虚线 = 100</span></div>
+      </div>
+
+      <div class="card chart-card reveal">
+        <div class="chart-head">
+          <div class="chart-title"><span class="micro">DISTRIBUTION YIELD</span><h3>股息率对比 <small>TTM</small></h3></div>
+          <div class="chart-read"><b id="spyYieldRead">—</b><span class="pill tone-teal">利差</span></div>
+        </div>
+        <div class="line-legend"><span><i class="swatch teal"></i><span id="yieldLegendTicker">—</span></span><span><i class="swatch blue"></i>SPY</span></div>
+        <div class="chart-wrap chart-mid"><canvas id="spyYieldChart"></canvas></div>
+        <div class="chart-foot"><span id="spyYieldFoot">—</span><span>滚动 12 个月实际派息</span></div>
+      </div>
+    </div>
+
+    <div class="card spy-table-card reveal">
+      <div class="card-head">
+        <div><span class="micro">SIDE BY SIDE</span><h3>同一时点的两张面孔</h3></div>
+        <p>PE、股息率、ERP 为当前值；回报与风险按共同起点计算。</p>
+      </div>
+      <div class="table-scroll">
+        <table class="spy-table">
+          <thead><tr><th>指标</th><th id="spyEtfHeader">ETF</th><th>SPY</th><th>差值</th></tr></thead>
+          <tbody id="spyTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="seasonality" class="section">
+    <div class="section-head reveal">
+      <div><span class="kicker">07 / SEASONALITY</span><h2>季节性，是习惯还是噪音</h2></div>
+      <p>按日历月统计历史总回报。样本越长越有参考价值；短样本只说明“发生过”，不说明“会重复”。</p>
+    </div>
+    <div class="card chart-card chart-card-wide reveal">
+      <div class="chart-head">
+        <div class="chart-title"><span class="micro">CALENDAR-MONTH RETURN</span><h3>月度季节性 <small>Total Return</small></h3></div>
+        <div class="chart-read"><b id="seasonRead">—</b><span class="pill" id="seasonPill">—</span></div>
+      </div>
+      <div class="chart-wrap chart-season"><div class="season-bars" id="seasonBars"></div></div>
+      <div class="season-strip" id="seasonStrip"></div>
+      <div class="chart-foot"><span id="seasonFoot">—</span><span>完整月份 · 含股息再投资</span></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head reveal">
+      <div><span class="kicker">08 / TRACK RECORD</span><h2>读数日志</h2></div>
+      <p>把每个月末的快照留在档案里，长期追踪估值状态的变化，而不是只记住今天。</p>
+    </div>
+    <div class="card table-card reveal">
+      <div class="table-toolbar">
+        <div><span class="micro">MONTHLY SNAPSHOT</span><h3>最近 12 个月</h3></div>
+        <div class="table-actions">
+          <a class="ghost-btn" id="csvLink" href="data/vflo_daily.csv" download>下载日频 CSV</a>
+          <a class="ghost-btn" id="jsonLink" href="data.json" target="_blank" rel="noopener">打开 JSON</a>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>日期</th><th>价格</th><th>PE-TTM</th><th>股息率</th><th>ERP</th><th>综合分位</th><th>状态</th></tr></thead>
+          <tbody id="logBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="method" class="section method-section">
+    <div class="section-head reveal">
+      <div><span class="kicker">09 / METHODOLOGY</span><h2>数据、公式与边界</h2></div>
+      <p>这是一个长期追踪工具，不是投资建议。每个数字都应该知道它从哪里来、哪里会出错。</p>
+    </div>
+
+    <div class="method-grid">
+      <div class="card method-card reveal">
+        <div class="card-head"><div><span class="micro">FORMULAS</span><h3>指标口径</h3></div></div>
+        <dl class="formula-list">
+          <div><dt>PE-TTM <span class="tag-model">模型</span></dt><dd><code>Price ÷ 组合 TTM 每股盈利</code><p>以当前实际 PE 为锚，用标普 500 TTM EPS 路径缩放组合盈利。</p></div>
+          <div><dt>Forward PE <span class="tag-model">当前值</span></dt><dd><code>Price ÷ 未来 12 个月预期 EPS</code><p>使用与 SPY 相同的公开来源；只展示当前值，不伪造历史序列。</p></div>
+          <div><dt>PEG <span class="tag-model">当前值</span></dt><dd><code>Forward PE ÷ 长期盈利增速(%)</code><p>长期增速来自 Morningstar 组合“Long-Term Earnings %”，仅用于当前辅助比较，不进入综合分位。</p></div>
+          <div><dt>股息率</dt><dd><code>过去 12 个月派息 ÷ Price</code><p>只使用已除息的现金分配，不预测未来派息。</p></div>
+          <div><dt>风险溢价 ERP</dt><dd><code>1 / PE − 10Y Treasury</code><p>盈利收益率减去 10 年期美债收益率，衡量股权相对无风险资产的补偿。</p></div>
+          <div><dt>SPY 对比</dt><dd><code>TTM PE、Forward PE、PEG、股息率、ERP、总回报</code><p>SPY 使用实际价格、股息和当前公开 PE；回报按共同起点、含股息再投资计算。</p></div>
+          <div><dt>季节性</dt><dd><code>日历月总回报</code><p>只用完整月份，统计各月平均、中位与胜率；短样本会明确标注。</p></div>
+          <div><dt>历史分位</dt><dd><code>rank(value) ÷ N × 100</code><p>20 / 40 / 60 / 80 分位切成五档：深度低估、低估、适中、偏高、高估。</p></div>
+        </dl>
+      </div>
+
+      <div class="card method-card reveal">
+        <div class="card-head"><div><span class="micro">SOURCES</span><h3>数据来源</h3></div></div>
+        <ul class="source-list" id="sourceList"></ul>
+        <div class="model-warning">
+          <span class="warn-icon">!</span>
+          <p><b>关于模型估算</b><br>ETF 不逐日披露组合 PE。本站的 PE-TTM 是以公开现值为锚的估算序列；Forward PE、SPY 的 TTM / Forward PE 均使用当前公开读数，不做历史拟合。PE 与 SPY 的对比跨风格，折价不能直接解读为收益预测。</p>
+        </div>
+        <p class="audit-note" id="auditNote">数据审计：PE / Forward PE 同源同日（StockAnalysis）；PEG 长期增速来自 Morningstar；价格与股息来自 Yahoo Finance；季节性只用完整月份总回报。</p>
+      </div>
+    </div>
+
+    <div class="card ops-card reveal">
+      <div class="ops-copy">
+        <span class="micro">MAINTAIN / 长期追踪</span>
+        <h3>一条命令，更新整站</h3>
+        <p>行情、股息、SPY 数据、10 年期美债与标普 500 盈利路径自动抓取；更新 <code>data/raw/anchors.json</code> 中的 <span id="opsTickers">—</span> / SPY PE 公开现值后，重新生成数据与页面。</p>
+      </div>
+      <pre><code><span class="c"># 更新行情并重建数据</span>
+python scripts/update_data.py
+
+<span class="c"># 仅重建（使用本地缓存）</span>
+python scripts/build_data.py</code></pre>
+    </div>
+
+    <div class="disclaimer">
+      <p>本页面由公开数据构建，仅用于研究与教育，不构成任何证券、基金或投资策略的推荐。历史分位不代表未来回归，模型估算存在误差。投资有风险，决策前请阅读基金招募说明书并咨询持牌顾问。</p>
+      <p>CASH COW LAB · 数据快照 <b id="footAsOf">—</b> · 生成于 <b id="footGenerated">—</b> · 样本 <b id="footObs">—</b></p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-left"><span class="brand-mark small">C</span><span><b>CASH COW LAB</b><small>Cash cows, fair value.</small></span></div>
+  <div class="footer-right"><span id="footerTicker">—</span><span>© 2026 CASH COW LAB</span></div>
+</footer>
+
+<script src="data/soxx.js"></script>
+<script src="assets/chart.umd.min.js"></script>
+<script>window.PAGE_CONFIG = {"ticker": "SOXX", "theme": "soxx", "name": "iShares Semiconductor ETF", "csv": "data/soxx_daily.csv", "eyebrow": "ISHARES SEMICONDUCTOR ETF · SOXX", "hero_title": "芯片周期，<br><em>不只看增长。</em>", "hero_lede": "半导体的盈利波动远大于宽基指数。<br>用 PE、Forward PE、PEG 与 SPY 对照，辨认周期里的估值位置。", "price_head": "价格，是结果不是原因", "price_sub": "SOXX 的曲线由资本开支、库存周期与 AI 预期共同驱动。估值必须和周期一起看。", "val_head": "估值，周期的温度计", "val_sub": "PE 与 Forward PE 的落差，反映盈利修复或衰退的预期；PEG 只适合作为辅助。", "income_head": "股息，只是周期的余数", "income_sub": "SOXX 按季度分配，股息率很低。它的回报主要来自价格与盈利周期，而不是分红。"};</script>
+<script src="app.js"></script>
+</body>
+</html>
