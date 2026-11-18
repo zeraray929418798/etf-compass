@@ -1,0 +1,97 @@
+name: Update ETF data and deploy
+
+on:
+  schedule:
+    # 23:30 UTC weekdays = 07:30 Asia/Shanghai the following morning.
+    - cron: "30 23 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  update-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Refresh market data
+        run: python scripts/update_data.py
+
+      - name: Persist anchors and monthly snapshots
+        continue-on-error: true
+        run: |
+          set -e
+          MONTH=$(date -u +%Y-%m)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for TICKER in VFLO IFLO COWZ SCHD QQQ SOXX XLP; do
+            mkdir -p "data/snapshots/${TICKER}"
+            SNAP="data/snapshots/${TICKER}/${MONTH}.json"
+            if [ ! -f "$SNAP" ]; then
+              cp "site/data/${TICKER,,}.json" "$SNAP"
+              echo "Created $SNAP"
+            fi
+            git add "data/snapshots/${TICKER}/${MONTH}.json"
+          done
+          git add data/raw/anchors.json
+          if git diff --cached --quiet; then
+            echo "No persistent data changes."
+          else
+            git commit -m "chore: update ETF anchors and monthly snapshots ${MONTH}"
+            git push origin "HEAD:${{ github.event.repository.default_branch }}"
+          fi
+
+      - name: Upload data artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: etf-data-${{ github.run_id }}
+          path: |
+            site/data/*.json
+            site/data/*_daily.csv
+          retention-days: 90
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Write deployment summary
+        run: |
+          DATA_DATE=$(python -c "import json; print(json.load(open('site/data/hub.json'))['as_of'])")
+          echo "### Four-ETF dashboard deployed" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "- URL: ${{ steps.deployment.outputs.page_url }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Data as of: ${DATA_DATE}" >> "$GITHUB_STEP_SUMMARY"
