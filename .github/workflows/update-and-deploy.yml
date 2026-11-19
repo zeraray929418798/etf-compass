@@ -48,7 +48,7 @@ jobs:
           MONTH=$(date -u +%Y-%m)
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          for TICKER in VFLO IFLO COWZ SCHD QQQ SOXX XLP; do
+          for TICKER in VFLO IFLO COWZ SCHD QQQ SOXX XLP SPY; do
             mkdir -p "data/snapshots/${TICKER}"
             SNAP="data/snapshots/${TICKER}/${MONTH}.json"
             if [ ! -f "$SNAP" ]; then
