@@ -610,7 +610,7 @@ def build_hub(payloads: list[dict]) -> None:
 
 
 def build_sector_ratio() -> None:
-    """XLK / XLP total-return ratio, YoY curve and monthly MACD(12,26,9)."""
+    """XLK / XLP total-return ratio, YoY curve and weekly MACD(12,26,9)."""
     xlk, _ = load_yahoo(RAW / "xlk_yahoo.json")
     xlp, _ = load_yahoo(RAW / "xlp_yahoo.json")
     pair = pd.concat(
@@ -620,11 +620,15 @@ def build_sector_ratio() -> None:
     ratio = pair["xlk"] / pair["xlp"]
     yoy = (ratio / ratio.shift(252) - 1.0) * 100.0
 
-    # Monthly MACD keeps the lower panel on a slower horizon than the noisy
-    # monthly MACD is a slower companion to the YoY ratio curve.
-    monthly = ratio.resample("ME").last().dropna()
-    ema12 = monthly.ewm(span=12, adjust=False).mean()
-    ema26 = monthly.ewm(span=26, adjust=False).mean()
+    # Weekly MACD keeps the lower panel slower than a short oscillator but uses the
+    # actual last trading date of each week, so it aligns with the daily ratio
+    # chart instead of floating at calendar month-end.
+    periods = ratio.index.to_period("W-FRI")
+    grouped = ratio.groupby(periods)
+    weekly = grouped.last().dropna()
+    weekly.index = pd.DatetimeIndex(grouped.apply(lambda s: s.index[-1]).values)
+    ema12 = weekly.ewm(span=12, adjust=False).mean()
+    ema26 = weekly.ewm(span=26, adjust=False).mean()
     macd = ema12 - ema26
     signal = macd.ewm(span=9, adjust=False).mean()
     hist = macd - signal
@@ -650,7 +654,7 @@ def build_sector_ratio() -> None:
             "signal": round(float(signal.loc[idx]), 5),
             "hist": round(float(hist.loc[idx]), 5),
         }
-        for idx in monthly.index
+        for idx in weekly.index
         if idx >= frame.index[0]
     ]
     payload = {

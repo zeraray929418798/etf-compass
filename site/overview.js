@@ -295,7 +295,7 @@
     { label: "历史均值", value: signed(C.mean, 2), sub: "全历史同比" },
     { label: "当前分位", value: num(C.percentile, 1) + "%", sub: `20% ${num(C.p20, 1)}% · 80% ${num(C.p80, 1)}%` },
   ].map((s) => `<div class="ratio-stat"><span>${s.label}</span><b>${s.value}</b><em>${s.sub}</em></div>`).join("");
-  $("ratioFoot").textContent = `XLK / XLP = ${num(C.ratio, 3)} · MACD ${num(C.macd, 3)} / Signal ${num(C.signal, 3)} / Hist ${num(C.hist, 3)} · ${S.length} 个交易日 · 月度 MACD · 滚轮缩放，双击复位`;
+  $("ratioFoot").textContent = `XLK / XLP = ${num(C.ratio, 3)} · MACD ${num(C.macd, 3)} / Signal ${num(C.signal, 3)} / Hist ${num(C.hist, 3)} · ${S.length} 个交易日 · 周线 MACD · 滚轮缩放，双击复位`;
 
   function applyWindow(start) {
     const min = Math.max(first, Math.min(start, last - 30 * DAY));

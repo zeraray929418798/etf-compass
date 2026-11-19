@@ -67,7 +67,7 @@ serve.py
 https://zeraray929418798.github.io/etf-compass/
 ```
 
-首页是七个 ETF 的总览，点卡片进入 VFLO、IFLO、COWZ、SCHD、QQQ、SOXX、XLP 各自页面；下方还有 XLK/XLP 比值同比与月线 MACD 图，可用滚轮缩放。
+首页是七个 ETF 的总览，点卡片进入 VFLO、IFLO、COWZ、SCHD、QQQ、SOXX、XLP 各自页面；下方还有 XLK/XLP 比值同比与周线 MACD 图，可用滚轮缩放。
 
 ## 以后
 
