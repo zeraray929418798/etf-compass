@@ -45,14 +45,14 @@
     "pe": 25.33,
     "forward_pe": 21.28,
     "lt_growth": 7.36,
-    "as_of": "2026-11-18",
-    "lt_growth_as_of": "2026-11-19"
+    "as_of": "2026-11-17",
+    "lt_growth_as_of": "2026-11-18"
   },
   "SPY": {
     "pe": 22.85,
     "forward_pe": 18.38,
     "lt_growth": 17.75,
-    "as_of": "2026-11-18",
-    "lt_growth_as_of": "2026-11-19"
+    "as_of": "2026-11-17",
+    "lt_growth_as_of": "2026-11-18"
   }
 }

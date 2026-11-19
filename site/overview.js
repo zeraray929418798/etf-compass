@@ -195,6 +195,7 @@
         type: "linear",
         min: first,
         max: last + 3 * DAY,
+        offset: false,
         grid: { display: false },
         border: { display: false },
         ticks: {
@@ -324,4 +325,5 @@
     canvas.addEventListener("wheel", (event) => zoomAt(event, canvas), { passive: false });
     canvas.addEventListener("dblclick", () => applyWindow(first));
   });
-})();
+
+  })();
