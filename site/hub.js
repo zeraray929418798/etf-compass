@@ -7,7 +7,7 @@
   const num = (v, d = 2) => (v == null || Number.isNaN(Number(v)) ? "—" : Number(v).toFixed(d));
   const signed = (v, d = 2) => (v == null ? "—" : `${Number(v) >= 0 ? "+" : ""}${Number(v).toFixed(d)}%`);
   const pp = (v, d = 1) => (v == null ? "—" : `${Number(v) >= 0 ? "+" : ""}${Number(v).toFixed(d)}pp`);
-  const color = { vflo: "#e3b46a", iflo: "#7fb0df", cowz: "#a7c88c", schd: "#d99a6c", qqq: "#a897e8", soxx: "#e08a6a" };
+  const color = { vflo: "#e3b46a", iflo: "#7fb0df", cowz: "#a7c88c", schd: "#d99a6c", qqq: "#a897e8", soxx: "#e08a6a", xlp: "#b8c98a", spy: "#7fb0df" };
   const regimeClass = (r) => r.includes("高估") ? "red" : r.includes("偏高") ? "amber" : r.includes("低估") ? "green" : "neutral";
 
   const spark = (values, c) => {
@@ -46,9 +46,10 @@
         <div class="hub-stat"><span>FWD / PEG</span><b>${num(f.forward_pe)}x / ${num(f.peg)}</b></div>
         <div class="hub-stat"><span>股息率</span><b>${num(f.dy)}%</b></div>
         <div class="hub-stat"><span>ERP</span><b>${num(f.erp)}%</b></div>
-        <div class="hub-stat"><span>VS SPY</span><b>PE ${f.spy_discount >= 0 ? "-" : "+"}${num(Math.abs(f.spy_discount), 0)}%</b></div>
+        ${f.is_benchmark
+          ? `<div class="hub-stat"><span>角色</span><b>基准</b></div><div class="hub-stat"><span>成立以来年化</span><b>${signed(f.cagr, 1)}</b></div>`
+          : `<div class="hub-stat"><span>VS SPY</span><b>PE ${f.spy_discount >= 0 ? "-" : "+"}${num(Math.abs(f.spy_discount), 0)}%</b></div><div class="hub-stat"><span>1Y 相对</span><b>${pp(f.relative_1y)}</b></div>`}
         <div class="hub-stat"><span>综合分位</span><b>${num(f.composite, 0)} / 100</b></div>
-        <div class="hub-stat"><span>1Y 相对</span><b>${pp(f.relative_1y)}</b></div>
       </div>
     </a>
   `).join("");
@@ -63,8 +64,8 @@
       <td>${num(f.dy)}%</td>
       <td>${num(f.erp)}%</td>
       <td>${num(f.composite, 0)} · ${f.regime}</td>
-      <td>PE ${f.spy_discount >= 0 ? "-" : "+"}${num(Math.abs(f.spy_discount), 0)}%</td>
-      <td>${pp(f.relative_1y)}</td>
+      <td>${f.is_benchmark ? "基准" : `PE ${f.spy_discount >= 0 ? "-" : "+"}${num(Math.abs(f.spy_discount), 0)}%`}</td>
+      <td>${f.is_benchmark ? `${signed(f.cagr, 1)} 年化` : pp(f.relative_1y)}</td>
     </tr>
   `).join("");
 })();

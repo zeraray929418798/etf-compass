@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="七只 ETF 的估值罗盘：价格、PE-TTM、Forward PE、PEG、股息率、简单收益率利差、利差分位及与 SPY 的对比。">
+<meta name="description" content="八只 ETF 的估值罗盘：价格、PE-TTM、Forward PE、PEG、股息率、股权风险溢价及与 SPY 的对比。">
 <title>ETF 估值罗盘 · CASH COW LAB</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="styles.css">
@@ -30,7 +30,8 @@
   <a href="qqq.html" data-ticker="QQQ">QQQ</a>
   <a href="soxx.html" data-ticker="SOXX">SOXX</a>
   <a href="xlp.html" data-ticker="XLP">XLP</a>
-  <span class="etf-nav-note">七只 ETF · 同一个 SPY 参照系</span>
+  <a href="spy.html" data-ticker="SPY">SPY</a>
+  <span class="etf-nav-note">八只 ETF · 同一个 SPY 参照系</span>
 </nav>
 
 <main id="top">
@@ -83,7 +84,7 @@
   <section class="ticker-strip" aria-label="实时指标摘要">
     <div class="tick"><span id="tickTicker">—</span><b id="tickPrice">—</b><em id="tickChg">—</em></div>
     <div class="tick"><span>PE-TTM</span><b id="tickPe">—</b><em class="tone-red" id="tickPePct">—</em></div>
-    <div class="tick"><span>VS SPY</span><b id="tickSpyDiscount">—</b><em class="tone-blue" id="tickSpyLabel">TTM PE 折价</em></div>
+    <div class="tick" id="tickSpy"><span>VS SPY</span><b id="tickSpyDiscount">—</b><em class="tone-blue" id="tickSpyLabel">TTM PE 折价</em></div>
     <div class="tick"><span>DIV YIELD</span><b id="tickDy">—</b><em class="tone-teal" id="tickDyPct">—</em></div>
     <div class="tick"><span>ERP / 10Y</span><b id="tickErp">—</b><em class="tone-blue" id="tickUst">—</em></div>
     <div class="tick tick-note"><span>MODEL</span><b>PE 为锚定估算</b><em>详见方法</em></div>
@@ -202,28 +203,19 @@
 
   <section id="risk" class="section">
     <div class="section-head reveal">
-      <div><span class="kicker">05 / YIELD SPREAD</span><h2>简单收益率利差，安全垫还剩多厚</h2></div>
+      <div><span class="kicker">05 / RISK PREMIUM</span><h2>风险溢价，安全垫还剩多厚</h2></div>
       <p>盈利收益率减去 10 年期美债收益率。数值越低，股票相对无风险资产越贵。</p>
     </div>
     <div class="card chart-card chart-card-wide reveal">
       <div class="chart-head">
-        <div class="chart-title"><span class="micro">SIMPLE YIELD SPREAD</span><h3>简单收益率利差 <small>Earnings Yield − 10Y</small></h3></div>
+        <div class="chart-title"><span class="micro">EQUITY RISK PREMIUM</span><h3>股权风险溢价 <small>vs 10Y Treasury</small></h3></div>
         <div class="chart-read"><b id="erpRead">—</b><span class="pill badge-red" id="erpPill">—</span></div>
       </div>
-      <div class="band-legend reverse"><span>利差低 · 贵</span><div class="band-gradient reverse"></div><span>利差高 · 便宜</span></div>
-      <div class="line-legend"><span><i class="swatch red"></i>简单收益率利差</span><span><i class="swatch blue"></i>10 年期美债收益率</span><span><i class="swatch dim"></i>历史中位数</span></div>
+      <div class="band-legend reverse"><span>溢价低 · 贵</span><div class="band-gradient reverse"></div><span>溢价高 · 便宜</span></div>
+      <div class="line-legend"><span><i class="swatch red"></i>股权风险溢价</span><span><i class="swatch blue"></i>10 年期美债收益率</span><span><i class="swatch dim"></i>历史中位数</span></div>
       <div class="chart-wrap chart-erp"><canvas id="erpChart"></canvas></div>
       <div class="risk-strip" id="riskStrip"></div>
-      <div class="chart-foot"><span id="erpFoot">—</span><span>背景 = 五档分位（低利差为贵）</span></div>
-    </div>
-    <div class="card chart-card chart-card-wide reveal">
-      <div class="chart-head">
-        <div class="chart-title"><span class="micro">HISTORICAL PERCENTILE</span><h3>利差历史分位 <small>0–100</small></h3></div>
-        <div class="chart-read"><b id="erpPctRead">—</b><span class="pill badge-blue" id="erpPctPill">—</span></div>
-      </div>
-      <div class="line-legend"><span><i class="swatch blue"></i>分位</span><span><i class="swatch dim"></i>50 中位</span><span>高于 80 = 利差处历史高位</span></div>
-      <div class="chart-wrap chart-mid"><canvas id="erpPctChart"></canvas></div>
-      <div class="chart-foot"><span id="erpPctFoot">—</span><span>0 = 历史最低利差 · 100 = 最高</span></div>
+      <div class="chart-foot"><span id="erpFoot">—</span><span>背景 = 五档分位（低溢价为贵）</span></div>
     </div>
   </section>
 
@@ -330,7 +322,7 @@
           <div><dt>Forward PE <span class="tag-model">当前值</span></dt><dd><code>Price ÷ 未来 12 个月预期 EPS</code><p>使用与 SPY 相同的公开来源；只展示当前值，不伪造历史序列。</p></div>
           <div><dt>PEG <span class="tag-model">当前值</span></dt><dd><code>Forward PE ÷ 长期盈利增速(%)</code><p>长期增速来自 Morningstar 组合“Long-Term Earnings %”，仅用于当前辅助比较，不进入综合分位。</p></div>
           <div><dt>股息率</dt><dd><code>过去 12 个月派息 ÷ Price</code><p>只使用已除息的现金分配，不预测未来派息。</p></div>
-          <div><dt>简单收益率利差（ERP）</dt><dd><code>1 / PE − 10Y Treasury</code><p>盈利收益率减去 10 年期美债收益率，衡量股权相对无风险资产的补偿。</p></div>
+          <div><dt>风险溢价 ERP</dt><dd><code>1 / PE − 10Y Treasury</code><p>盈利收益率减去 10 年期美债收益率，衡量股权相对无风险资产的补偿。</p></div>
           <div><dt>SPY 对比</dt><dd><code>TTM PE、Forward PE、PEG、股息率、ERP、总回报</code><p>SPY 使用实际价格、股息和当前公开 PE；回报按共同起点、含股息再投资计算。</p></div>
           <div><dt>季节性</dt><dd><code>日历月总回报</code><p>只用完整月份，统计各月平均、中位与胜率；短样本会明确标注。</p></div>
           <div><dt>历史分位</dt><dd><code>rank(value) ÷ N × 100</code><p>20 / 40 / 60 / 80 分位切成五档：深度低估、低估、适中、偏高、高估。</p></div>
@@ -375,7 +367,7 @@ python scripts/build_data.py</code></pre>
 
 <script src="data/soxx.js"></script>
 <script src="assets/chart.umd.min.js"></script>
-<script>window.PAGE_CONFIG = {"ticker": "SOXX", "theme": "soxx", "name": "iShares Semiconductor ETF", "csv": "data/soxx_daily.csv", "eyebrow": "ISHARES SEMICONDUCTOR ETF · SOXX", "hero_title": "芯片周期，<br><em>不只看增长。</em>", "hero_lede": "半导体的盈利波动远大于宽基指数。<br>用 PE、Forward PE、PEG 与 SPY 对照，辨认周期里的估值位置。", "price_head": "价格，是结果不是原因", "price_sub": "SOXX 的曲线由资本开支、库存周期与 AI 预期共同驱动。估值必须和周期一起看。", "val_head": "估值，周期的温度计", "val_sub": "PE 与 Forward PE 的落差，反映盈利修复或衰退的预期；PEG 只适合作为辅助。", "income_head": "股息，只是周期的余数", "income_sub": "SOXX 按季度分配，股息率很低。它的回报主要来自价格与盈利周期，而不是分红。"};</script>
+<script>window.PAGE_CONFIG = {"ticker": "SOXX", "theme": "soxx", "name": "iShares Semiconductor ETF", "csv": "data/soxx_daily.csv", "eyebrow": "ISHARES SEMICONDUCTOR ETF · SOXX", "hero_title": "芯片周期，<br><em>不只看增长。</em>", "hero_lede": "半导体的盈利波动远大于宽基指数。<br>用 PE、Forward PE、PEG 与 SPY 对照，辨认周期里的估值位置。", "price_head": "价格，是结果不是原因", "price_sub": "SOXX 的曲线由资本开支、库存周期与 AI 预期共同驱动。估值必须和周期一起看。", "val_head": "估值，周期的温度计", "val_sub": "PE 与 Forward PE 的落差，反映盈利修复或衰退的预期；PEG 只适合作为辅助。", "income_head": "股息，只是周期的余数", "income_sub": "SOXX 按季度分配，股息率很低。它的回报主要来自价格与盈利周期，而不是分红。", "is_benchmark": false};</script>
 <script src="app.js"></script>
 </body>
 </html>

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="七只 ETF 的估值罗盘：VFLO、IFLO、COWZ、SCHD、QQQ、SOXX、XLP 的价格、PE-TTM、Forward PE、PEG、股息率、股权风险溢价，以及与 SPY 的对比。">
-<title>七只 ETF，七种价格 · CASH COW LAB</title>
+<meta name="description" content="八只 ETF 的估值罗盘：VFLO、IFLO、COWZ、SCHD、QQQ、SOXX、XLP、SPY 的价格、PE-TTM、Forward PE、PEG、股息率、股权风险溢价，以及与 SPY 的对比。">
+<title>八只 ETF，八种价格 · CASH COW LAB</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -30,15 +30,16 @@
   <a href="qqq.html">QQQ</a>
   <a href="soxx.html">SOXX</a>
   <a href="xlp.html">XLP</a>
-  <span class="etf-nav-note">七只 ETF · 同一个 SPY 参照系</span>
+  <a href="spy.html">SPY</a>
+  <span class="etf-nav-note">八只 ETF · 同一个 SPY 参照系</span>
 </nav>
 
 <main>
   <section class="hub-hero">
     <div>
-      <div class="eyebrow"><span class="eyebrow-line"></span>VFLO · IFLO · COWZ · SCHD · QQQ · SOXX · XLP</div>
-      <h1>七只 ETF，<br><em>七种价格。</em></h1>
-      <p>同一套估值框架，七种不同的地域、行业、成长与股息路径。用 PE-TTM、Forward PE、PEG、股息率与股权风险溢价，再借 SPY 做参照，看清每一只 ETF 相对自己的历史处在什么位置。</p>
+      <div class="eyebrow"><span class="eyebrow-line"></span>VFLO · IFLO · COWZ · SCHD · QQQ · SOXX · XLP · SPY</div>
+      <h1>八只 ETF，<br><em>八种价格。</em></h1>
+      <p>同一套估值框架，八种不同的地域、行业、成长与股息路径。用 PE-TTM、Forward PE、PEG、股息率与股权风险溢价，再借 SPY 做参照，看清每一只 ETF 相对自己的历史处在什么位置。</p>
     </div>
     <aside class="hub-spy">
       <span class="micro">BENCHMARK · SPY</span>
@@ -52,16 +53,16 @@
     </aside>
   </section>
 
-  <section class="hub-grid" id="hubGrid" aria-label="七只 ETF 当前快照"></section>
+  <section class="hub-grid" id="hubGrid" aria-label="八只 ETF 当前快照"></section>
 
   <section class="hub-table card hub-table-card">
     <div class="hub-table-head">
-      <div><span class="micro">SIDE BY SIDE</span><h3>七只 ETF，一张对照表</h3></div>
+      <div><span class="micro">SIDE BY SIDE</span><h3>八只 ETF，一张对照表</h3></div>
       <p>PE、股息率、ERP 为当前值；相对 SPY 为 PE 折价与近一年总回报差。</p>
     </div>
     <div class="table-scroll">
       <table>
-        <thead><tr><th>ETF</th><th>价格</th><th>PE-TTM</th><th>FWD PE</th><th>PEG</th><th>股息率</th><th>ERP</th><th>综合分位</th><th>vs SPY</th><th>1Y 相对</th></tr></thead>
+        <thead><tr><th>ETF</th><th>价格</th><th>PE-TTM</th><th>FWD PE</th><th>PEG</th><th>股息率</th><th>ERP</th><th>综合分位</th><th>vs SPY</th><th>1Y 相对 / 年化</th></tr></thead>
         <tbody id="hubTableBody"></tbody>
       </table>
     </div>

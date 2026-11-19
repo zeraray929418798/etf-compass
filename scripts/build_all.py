@@ -451,6 +451,48 @@ def build_one(
         },
     ]
 
+    if ticker == "SPY":
+        insights = [
+            {
+                "tag": "自身估值",
+                "title": f"PE {current['pe']:.1f}x，历史 {current['pct_pe']:.0f}% 分位",
+                "body": (
+                    f"SPY 当前 TTM PE {current['pe']:.1f}x、Forward PE {current['forward_pe']:.1f}x、"
+                    f"PEG {current['peg']:.2f}。自身历史中位 PE 为 {current['median_pe']:.1f}x，"
+                    f"当前综合分位 {current['pct_composite']:.0f} / 100（{current['regime']}）。"
+                ),
+                "tone": "amber",
+            },
+            {
+                "tag": "长期路径",
+                "title": f"成立以来年化价格 {current['cagr_since_inception']:+.1f}%",
+                "body": (
+                    f"从 {df.index[0].strftime('%Y-%m-%d')} 至 {as_of.strftime('%Y-%m-%d')}，"
+                    f"SPY 价格累计 {current['price_change_since_inception']:+.0f}%；"
+                    f"这是基准自身的长期路径，不需要再和 SPY 比较。"
+                ),
+                "tone": "teal",
+            },
+            {
+                "tag": "现金回报",
+                "title": f"股息率 {current['dy']:.2f}%",
+                "body": (
+                    f"TTM 派息 ${current['ttm_div']:.2f}，处于自身历史 {current['pct_dy']:.0f}% 分位。"
+                    "SPY 的股息率不是收益主角，但它是总回报的一部分。"
+                ),
+                "tone": "green",
+            },
+            {
+                "tag": "风险补偿",
+                "title": f"ERP {current['erp']:.2f}%",
+                "body": (
+                    f"10 年期美债 {current['ust10y']:.2f}%，盈利收益率 {current['earnings_yield']:.2f}%，"
+                    f"ERP 位于自身历史 {current['pct_erp']:.0f}% 分位。"
+                ),
+                "tone": "blue",
+            },
+        ]
+
     meta = {
         **{k: cfg[k] for k in ("ticker", "name", "short", "exchange", "theme", "inception", "aum", "expense", "holdings", "category", "distribution")},
         "as_of": as_of.strftime("%Y-%m-%d"),
@@ -560,6 +602,7 @@ def render_page(cfg: dict) -> None:
         "val_sub": cfg["val_sub"],
         "income_head": cfg["income_head"],
         "income_sub": cfg["income_sub"],
+        "is_benchmark": cfg["ticker"] == "SPY",
     }
     page = template.replace(
         "{{PAGE_DATA_SCRIPT}}",
@@ -592,6 +635,8 @@ def build_hub(payloads: list[dict]) -> None:
             "regime": current["regime"],
             "spy_discount": comparison["pe_discount"],
             "relative_1y": comparison["relative_1y"],
+            "cagr": current["cagr_since_inception"],
+            "is_benchmark": meta["ticker"] == "SPY",
             "spark": [d["close"] for d in payload["series"][-90:]],
             "href": f"{meta['ticker'].lower()}.html",
         })

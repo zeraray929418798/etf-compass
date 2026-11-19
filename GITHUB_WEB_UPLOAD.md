@@ -1,4 +1,4 @@
-# 只用 GitHub 网页版：发布七 ETF 估值网站
+# 只用 GitHub 网页版：发布八 ETF 估值网站
 
 不需要安装 Git。全程在浏览器完成，约 10 分钟。
 
@@ -67,7 +67,7 @@ serve.py
 https://zeraray929418798.github.io/etf-compass/
 ```
 
-首页是七个 ETF 的总览，点卡片进入 VFLO、IFLO、COWZ、SCHD、QQQ、SOXX、XLP 各自页面；下方还有 XLK/XLP 比值同比与周线 MACD 图，可用滚轮缩放。
+首页是八个 ETF 的总览，点卡片进入 VFLO、IFLO、COWZ、SCHD、QQQ、SOXX、XLP、SPY 各自页面；下方还有 XLK/XLP 比值同比与周线 MACD 图，可用滚轮缩放。
 
 ## 以后
 

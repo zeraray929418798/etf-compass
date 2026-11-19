@@ -1,6 +1,6 @@
-# CASH COW LAB · 七只 ETF 估值罗盘
+# CASH COW LAB · 八只 ETF 估值罗盘
 
-一个以可视化为主的多 ETF 长期估值站点，包含 **VFLO、IFLO、COWZ、SCHD、QQQ、SOXX、XLP** 七个独立页面，并统一加入 **SPY 对比**、**Forward PE / PEG** 和 **月度季节性**。
+一个以可视化为主的多 ETF 长期估值站点，包含 **VFLO、IFLO、COWZ、SCHD、QQQ、SOXX、XLP、SPY** 八个独立页面，并加入 **Forward PE / PEG** 和 **月度季节性**；前七只 ETF 统一与 SPY 对比，SPY 页面作为基准页，不与自己对比。
 
 每只 ETF 使用**各自可获得的最长日线历史**：XLP 可追到 1998 年，QQQ 到 1999 年，SOXX 到 2001 年，SCHD 到 2011 年，COWZ 到 2016 年；VFLO、IFLO 则从成立日开始。页面默认显示全历史。
 
@@ -8,7 +8,7 @@
 
 ## 页面
 
-- `index.html`：七只 ETF 总览与横向对照
+- `index.html`：八只 ETF 总览与横向对照
 - `vflo.html`：VictoryShares Free Cash Flow ETF
 - `iflo.html`：VictoryShares International Free Cash Flow ETF
 - `cowz.html`：Pacer US Cash Cows 100 ETF
@@ -17,9 +17,7 @@
 - `soxx.html`：iShares Semiconductor ETF
 - `xlp.html`：State Street Consumer Staples Select Sector SPDR ETF
 
-每页包含：价格与回撤、PE-TTM 五档分位、Forward PE / PEG、股息率、**简单收益率利差（盈利收益率 − 10Y）**、**利差历史分位**、SPY 总回报/相对强弱/股息率对比、当前指标对照表、月度季节性、月度读数日志。
-
-原来的“股权风险溢价”图公式与该利差相同，页面已把标题明确为「简单收益率利差」，并在下方新增「利差历史分位」图，避免重复画同一条曲线。
+每页包含：价格与回撤、PE-TTM 五档分位、Forward PE / PEG、股息率、股权风险溢价（ERP）、当前指标对照表、月度季节性、月度读数日志；前七只 ETF 另有 SPY 总回报/相对强弱/股息率对比，SPY 页面不和自己对比。
 
 总览页额外加入 **XLK / XLP 总回报比值的同比走势**（最长历史、均值虚线、20–80% 分位区间）和下方 **周线 MACD(12,26,9)**；两张图同步支持滚轮缩放、双击复位。
 
@@ -122,7 +120,7 @@ GitHub 使用 UTC：**周一至周五 23:30 UTC**，对应 **北京时间周二�
 
 - 拉取 VFLO、IFLO、COWZ、SCHD、QQQ、SOXX、XLP、SPY、`^TNX`、`^GSPC` 的**完整日线历史**；
 - 更新 8 个 PE / Forward PE 锚点，并从 Morningstar 刷新长期盈利增速（PEG 分母）；
-- 重建 7 个页面、hub、JSON 和 CSV；
+- 重建 8 个页面、hub、JSON 和 CSV；
 - 为每只 ETF 写月度快照 `data/snapshots/{TICKER}/YYYY-MM.json`；
 - 部署 `site/` 到 GitHub Pages；
 - 上传数据 artifact，保留 90 天。
@@ -147,13 +145,14 @@ GitHub 使用 UTC：**周一至周五 23:30 UTC**，对应 **北京时间周二�
 - PE-TTM 是模型估算，不是 ETF 官方逐日披露值。
 - Forward PE 只做当前值和 SPY 对比，不进入综合分位，也不绘制伪造的历史曲线。
 - PEG 使用 Forward PE ÷ Morningstar “Long-Term Earnings %”，只做当前辅助指标；它不是 ETF 官方指标，跨行业不可直接比较。
+- ETF 层面没有统一、可核实的长期 forward growth 历史，因此不绘制 PEG 历史曲线；用当前增速回填历史会伪造数据。
 - IFLO 成立时间较短，历史分位只作方向参考。
 - 季节性按完整月份统计；VFLO、IFLO 样本较短，页面会明确标注“仅供参考”。
 - SPY 是宽基市场参照系，PE 折价不等于收益预测。
 
 ## 数据来源
 
-- [Yahoo Finance](https://finance.yahoo.com/quote/VFLO/history/)：七只 ETF、SPY 的完整日线与股息
+- [Yahoo Finance](https://finance.yahoo.com/quote/VFLO/history/)：八只 ETF 的完整日线与股息
 - [Morningstar](https://www.morningstar.com/etfs/xnas/vflo/portfolio)：组合长期盈利增速（PEG 分母）
 - [StockAnalysis](https://stockanalysis.com/etf/vflo/)：当前 PE-TTM / Forward PE
 - [Multpl](https://www.multpl.com/s-p-500-pe-ratio/table/by-month)：标普 500 月度 PE（1871 年起）
@@ -182,9 +181,9 @@ GitHub 使用 UTC：**周一至周五 23:30 UTC**，对应 **北京时间周二�
 | XLP | $91.46 | 25.33x | 21.28x | 7.36% | 2.89 | 2.40% |
 | SPY | $732.44 | 22.85x | 18.38x | 17.75% | 1.04 | 1.04% |
 
-- 历史起点：VFLO 2023-06、IFLO 2025-06、COWZ 2016-12、SCHD 2011-10、QQQ 1999-03、SOXX 2001-07、XLP 1998-12。
+- 历史起点：VFLO 2023-06、IFLO 2025-06、COWZ 2016-12、SCHD 2011-10、QQQ 1999-03、SOXX 2001-07、XLP 1998-12、SPY 1993-01。
 - 季节性使用完整月份总回报，当前未结束的 11 月不计入。
-- 季节性样本：VFLO 40 个月、IFLO 16 个月、COWZ 118 个月、SCHD 180 个月、QQQ 331 个月、SOXX 303 个月、XLP 334 个月。
+- 季节性样本：VFLO 40 个月、IFLO 16 个月、COWZ 118 个月、SCHD 180 个月、QQQ 331 个月、SOXX 303 个月、XLP 334 个月、SPY 405 个月。
 - 10 年期美债收益率：5.10%（^TNX，2026-11-17）。
 - 任何时点刷新后，以 `data/raw/anchors.json` 与 `meta.as_of` 为准。
 
@@ -199,8 +198,9 @@ etf-compass/
 │  ├─ cowz.html / schd.html
 │  ├─ qqq.html / soxx.html
 │  ├─ xlp.html
+│  ├─ spy.html
 │  ├─ styles.css
-│  ├─ app.js                     七页共用
+│  ├─ app.js                     八页共用
 │  ├─ hub.js                     总览页
 │  ├─ overview.js                XLK/XLP 比值图
 │  ├─ data/hub.js

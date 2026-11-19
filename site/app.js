@@ -5,6 +5,7 @@
   "use strict";
 
   const CFG = window.PAGE_CONFIG || {};
+  const IS_BENCH = !!CFG.is_benchmark;
   const D = window.ETF_DATA;
   const S = D && D.series;
   const C = D && D.current;
@@ -99,6 +100,7 @@
   function applyPageConfig() {
     const c = CFG;
     document.body.dataset.theme = c.theme || M.theme || "vflo";
+    document.body.classList.toggle("is-benchmark", IS_BENCH);
     document.title = `${M.ticker} 估值罗盘 · CASH COW LAB`;
     const meta = document.querySelector('meta[name="description"]');
     if (meta) meta.setAttribute("content", `${M.name}（${M.ticker}）长期估值追踪：价格、PE-TTM、股息率、股权风险溢价及与 SPY 的对比。`);
@@ -246,7 +248,7 @@
   }
 
   function renderMetricCards() {
-    const cards = [
+    let cards = [
       {
         target: "#price", label: "PRICE / 收盘价", value: money(C.price), small: "",
         sub: `52周 ${money(C.low_52w)} – ${money(C.high_52w)}`,
@@ -279,6 +281,8 @@
       },
     ];
 
+    if (IS_BENCH) cards = cards.filter((c) => c.target !== "#spy");
+    $("metricCards").classList.toggle("is-benchmark-grid", IS_BENCH);
     $("metricCards").innerHTML = cards.map((c) => `
       <article class="metric-card reveal" data-target="${c.target}" tabindex="0" role="link" aria-label="查看 ${c.label} 图表" style="--accent:${c.accent}">
         <div class="mc-top"><span class="mc-label">${c.label}</span><span class="mc-dot"></span></div>
@@ -702,32 +706,6 @@
     });
     charts.erp._firstData = firstTs;
 
-    const pctData = S.map((d) => ({ x: ts(d.date), y: d.pct_erp }));
-    const pctOptions = baseOptions((v) => Number(v).toFixed(0) + "%", true);
-    pctOptions.scales.y.min = 0;
-    pctOptions.scales.y.max = 100;
-    pctOptions.plugins.bands = {
-      thresholds: [20, 40, 60, 80],
-      colors: HIGH_BANDS,
-    };
-    pctOptions.plugins.tooltip.filter = (item) => !["当前", "历史中位数"].includes(item.dataset.label);
-    pctOptions.plugins.tooltip.callbacks.label = (ctx) => {
-      const label = ctx.dataset.label;
-      return "  " + label + "   " + Number(ctx.parsed.y).toFixed(0) + "%";
-    };
-    charts.erpPct = new Chart($("erpPctChart"), {
-      type: "line",
-      data: {
-        datasets: [
-          line("利差分位", pctData, COLORS.blue, { width: 1.8, order: 3 }),
-          medianLine(50),
-          currentPoint(C.pct_erp, COLORS.blue),
-        ],
-      },
-      options: pctOptions,
-    });
-    charts.erpPct._firstData = firstTs;
-
     buildSPYCharts();
   }
 
@@ -958,19 +936,17 @@
     $("erpRead").textContent = num(C.erp) + "%";
     $("erpPill").textContent = Math.round(C.pct_erp) + "% 分位";
     $("erpFoot").textContent = `10 年期美债 ${num(C.ust10y)}% · 盈利收益率 ${num(C.earnings_yield)}%`;
-    $("erpPctRead").textContent = num(C.pct_erp, 1) + "%";
-    $("erpPctPill").textContent = `当前利差 ${num(C.erp)}%`;
-    $("erpPctFoot").textContent = `${M.ticker} · 当前利差 ${num(C.erp)}% · 历史中位 ${num(median("erp"))}% · 历史分位 ${num(C.pct_erp, 1)}%`;
     $("riskStrip").innerHTML = [
-      { label: "当前利差", value: num(C.erp) + "%" },
+      { label: "当前 ERP", value: num(C.erp) + "%" },
       { label: "10 年期美债", value: num(C.ust10y) + "%" },
       { label: "盈利收益率", value: num(C.earnings_yield) + "%" },
-      { label: "利差历史均值", value: num(D.stats.erp_mean) + "%" },
+      { label: "ERP 历史均值", value: num(D.stats.erp_mean) + "%" },
     ].map((x) => `<div class="risk-stat"><span>${x.label}</span><b>${x.value}</b></div>`).join("");
   }
 
   /* ---------------- SPY comparison panel ---------------- */
   function renderSPY() {
+    if (IS_BENCH) return;
     const q = D.spy;
     const cmp = D.comparison;
     const ticker = M.ticker;

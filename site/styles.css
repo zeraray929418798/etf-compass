@@ -78,6 +78,8 @@ body[data-theme="cowz"] { --gold: #a7c88c; --gold-soft: #dceacb; }
 body[data-theme="schd"] { --gold: #d99a6c; --gold-soft: #f0cfb3; }
 body[data-theme="qqq"] { --gold: #a897e8; --gold-soft: #d8d0f5; }
 body[data-theme="soxx"] { --gold: #e08a6a; --gold-soft: #f3c9b7; }
+body[data-theme="xlp"] { --gold: #b8c98a; --gold-soft: #e1e9c8; }
+body[data-theme="spy"] { --gold: #7fb0df; --gold-soft: #c2dcf2; }
 
 /* ---------------- ETF page switcher ---------------- */
 .etf-nav {
@@ -536,6 +538,8 @@ main { position: relative; z-index: 1; }
 /* ---------------- metric cards ---------------- */
 .metrics-section { padding-top: 22px; }
 .metric-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
+.metric-grid.is-benchmark-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.is-benchmark #spy, .is-benchmark #tickSpy { display: none !important; }
 .metric-card {
   position: relative;
   min-height: 166px;
@@ -613,7 +617,6 @@ main { position: relative; z-index: 1; }
 .chart-price { height: 300px; margin-top: 8px; }
 .chart-dd { height: 105px; }
 .chart-erp { height: 322px; margin-top: 3px; }
-.chart-card-wide + .chart-card-wide { margin-top: 14px; }
 .ratio-card { margin-top: 0; }
 .chart-ratio { height: 330px; margin-top: 4px; }
 .chart-macd { height: 180px; margin-top: 2px; }
@@ -888,7 +891,7 @@ tbody tr:hover td { background: rgba(255, 255, 255, .018); }
   .tick { padding: 12px 13px 13px; }
   .tick b { font-size: 14px; }
   .tick-note { display: none; }
-  .metric-grid { grid-template-columns: 1fr 1fr; }
+  .metric-grid, .metric-grid.is-benchmark-grid { grid-template-columns: 1fr 1fr; }
   .ratio-stats { grid-template-columns: 1fr 1fr; }
   .ratio-stat:nth-child(2) { border-right: 0; }
   .ratio-stat:nth-child(3), .ratio-stat:nth-child(4) { border-top: 1px solid var(--line); }
