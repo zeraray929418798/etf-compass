@@ -613,6 +613,7 @@ main { position: relative; z-index: 1; }
 .chart-price { height: 300px; margin-top: 8px; }
 .chart-dd { height: 105px; }
 .chart-erp { height: 322px; margin-top: 3px; }
+.chart-card-wide + .chart-card-wide { margin-top: 14px; }
 .ratio-card { margin-top: 0; }
 .chart-ratio { height: 330px; margin-top: 4px; }
 .chart-macd { height: 180px; margin-top: 2px; }
