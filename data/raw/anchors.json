@@ -3,22 +3,22 @@
     "pe": 14.58,
     "forward_pe": 9.97,
     "lt_growth": 16.0,
-    "as_of": "2026-11-18",
-    "lt_growth_as_of": "2026-11-19"
+    "as_of": "2026-11-19",
+    "lt_growth_as_of": "2026-11-20"
   },
   "IFLO": {
     "pe": 14.29,
     "forward_pe": 10.76,
     "lt_growth": 11.35,
-    "as_of": "2026-11-18",
-    "lt_growth_as_of": "2026-11-19"
+    "as_of": "2026-11-19",
+    "lt_growth_as_of": "2026-11-20"
   },
   "COWZ": {
     "pe": 14.82,
     "forward_pe": 11.82,
     "lt_growth": 11.55,
-    "as_of": "2026-11-17",
-    "lt_growth_as_of": "2026-11-18"
+    "as_of": "2026-11-19",
+    "lt_growth_as_of": "2026-11-20"
   },
   "SCHD": {
     "pe": 18.23,
@@ -45,8 +45,8 @@
     "pe": 25.33,
     "forward_pe": 21.28,
     "lt_growth": 7.36,
-    "as_of": "2026-11-17",
-    "lt_growth_as_of": "2026-11-18"
+    "as_of": "2026-11-19",
+    "lt_growth_as_of": "2026-11-20"
   },
   "SPY": {
     "pe": 22.85,
