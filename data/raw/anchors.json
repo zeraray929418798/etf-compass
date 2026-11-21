@@ -3,15 +3,15 @@
     "pe": 14.58,
     "forward_pe": 9.97,
     "lt_growth": 16.0,
-    "as_of": "2026-11-19",
-    "lt_growth_as_of": "2026-11-20"
+    "as_of": "2026-11-20",
+    "lt_growth_as_of": "2026-11-21"
   },
   "IFLO": {
     "pe": 14.29,
     "forward_pe": 10.76,
     "lt_growth": 11.35,
-    "as_of": "2026-11-19",
-    "lt_growth_as_of": "2026-11-20"
+    "as_of": "2026-11-20",
+    "lt_growth_as_of": "2026-11-21"
   },
   "COWZ": {
     "pe": 14.82,
@@ -24,15 +24,15 @@
     "pe": 18.23,
     "forward_pe": 14.61,
     "lt_growth": 8.3,
-    "as_of": "2026-11-18",
-    "lt_growth_as_of": "2026-11-19"
+    "as_of": "2026-11-20",
+    "lt_growth_as_of": "2026-11-21"
   },
   "QQQ": {
     "pe": 25.34,
     "forward_pe": 18.94,
     "lt_growth": 24.36,
-    "as_of": "2026-11-18",
-    "lt_growth_as_of": "2026-11-19"
+    "as_of": "2026-11-20",
+    "lt_growth_as_of": "2026-11-21"
   },
   "SOXX": {
     "pe": 25.38,
@@ -52,7 +52,7 @@
     "pe": 22.85,
     "forward_pe": 18.38,
     "lt_growth": 17.75,
-    "as_of": "2026-11-18",
-    "lt_growth_as_of": "2026-11-19"
+    "as_of": "2026-11-20",
+    "lt_growth_as_of": "2026-11-21"
   }
 }
